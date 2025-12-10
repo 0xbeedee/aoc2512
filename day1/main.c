@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "lib.h"
 
@@ -30,5 +31,6 @@ int main()
     printf("[PHASE 1] Number of times zero was hit on the dial (after the rotations): %zu\n", num_zero_hits);
     printf("[PHASE 2] Number of times zero was hit on the dial (within the rotations): %zu\n", n_zeros_within_rotations);
 
+    free(rotations);
     return 0;
 }

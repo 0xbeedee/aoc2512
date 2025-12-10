@@ -1,4 +1,4 @@
-#include "stdlib.h"
+#include <stdlib.h>
 
 #include "lib.h"
 
@@ -52,9 +52,16 @@ size_t count_lines(FILE *fptr)
 // and followed by the rotation amount (with no space in between).
 int *parse_rotation_file(FILE *fptr, size_t *num_rotations)
 {
+    // first pass: get the number of lines for malloc
     size_t num_lines = count_lines(fptr);
     int *rotations = malloc(num_lines * sizeof(int));
+    if (rotations == NULL)
+    {
+        printf("Error allocating memory for the rotations.");
+        exit(-1);
+    }
 
+    // second pass: parse the file
     char *line = NULL;
     size_t len = 0, i = 0;
     int number;
