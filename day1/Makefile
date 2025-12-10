@@ -1,0 +1,34 @@
+# Compiler and flags
+CC = gcc
+CFLAGS = -Wall -Wextra -std=c11 -g
+
+# Build directory
+BUILD_DIR = build
+
+# Target executable
+TARGET = main
+
+# Source files
+SRCS = main.c lib.c
+OBJS = $(SRCS:%.c=$(BUILD_DIR)/%.o)
+
+# Default target
+all: $(BUILD_DIR) $(TARGET)
+
+# Create build directory
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
+
+# Link object files to create executable
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $(TARGET)
+
+# Compile source files to object files
+$(BUILD_DIR)/%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Clean build artifacts
+clean:
+	rm -rf $(BUILD_DIR) main
+
+.PHONY: all clean
