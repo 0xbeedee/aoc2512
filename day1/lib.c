@@ -5,11 +5,14 @@
 // Turns the dial by the specified amount.
 // Note that this function actually simulates the dial turning (instead of using modulare arithmetic, e.g.).
 // This approach is slower but simpler. It also lends itself very well to phase 2.
-void turn_dial(struct Dial *self, int amount)
+void turn_dial(Dial *self, int rotation_amount, size_t *n_zeros_hit)
 {
-    for (int i = 0; i < abs(amount); i++)
+    for (int i = 0; i < abs(rotation_amount); i++)
     {
-        if (amount < 0)
+        if (self->current_value == 0)
+            *n_zeros_hit += 1;
+
+        if (rotation_amount < 0)
         {
             // left rotation
             if (self->current_value == 0)
@@ -25,12 +28,6 @@ void turn_dial(struct Dial *self, int amount)
                 self->current_value = 0;
         }
     }
-}
-
-// Resets the dial to its initial value (50)
-void reset_dial(struct Dial *self)
-{
-    self->current_value = 50;
 }
 
 // Counts the number of lines in a file, and resets the file pointer afterwards

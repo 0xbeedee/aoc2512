@@ -4,12 +4,12 @@
 #include <stdio.h>
 
 // Struct simulating dial behaviour in an OOP-like manner.
-typedef struct Dial
+typedef struct dial_t
 {
     unsigned int current_value, max_value;
-};
-void turn_dial(struct Dial *self, int amount);
-void reset_dial(struct Dial *self);
+} Dial;
+
+void turn_dial(Dial *self, int rotation_amount, size_t *n_zeros_hit);
 
 size_t count_lines(FILE *fptr);
 int *parse_rotation_file(FILE *fptr, size_t *num_rotations);
