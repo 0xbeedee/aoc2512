@@ -11,7 +11,7 @@ int main()
     if (file_ptr == NULL)
     {
         printf("Error opening file.");
-        exit(-1);
+        return 1;
     }
 
     size_t num_rotations = 0, n_zeros_within_rotations = 0;
