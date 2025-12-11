@@ -5,5 +5,4 @@
 #include <fstream>
 
 std::vector<std::vector<std::string>> parseRanges(std::ifstream &inFile);
-
-std::vector<long long> getInvalidIDs(std::vector<std::vector<std::string>> &expandedRanges, bool phase1 = false);
+std::vector<long long> getInvalidIDs(const std::vector<std::vector<std::string>> &ranges, bool phase1 = false);

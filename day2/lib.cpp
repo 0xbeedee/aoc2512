@@ -1,16 +1,18 @@
 #include <iostream>
 #include <sstream>
-#include <tuple>
 
 #include "lib.hpp"
 
 /****************************** PRIVATE HELPERS ************************************/
 
 // Checks if a string is made up of repeating patterns.
-bool isRepeated(std::string s, bool phase1)
+bool isRepeated(const std::string &s, bool phase1)
 {
     if (phase1)
     {
+        if (s.size() % 2 != 0)
+            return false; // odd length strings can never satisfy the repeating condition
+
         std::string leftSlice(s.begin(), s.begin() + s.size() / 2);
         std::string rightSlice(s.begin() + s.size() / 2, s.end());
         return leftSlice == rightSlice;
@@ -63,17 +65,18 @@ std::vector<std::vector<std::string>> parseRanges(std::ifstream &inFile)
 }
 
 // Returns a vector of numerical invalid IDs.
-std::vector<long long> getInvalidIDs(std::vector<std::vector<std::string>> &expandedRanges, bool phase1)
+std::vector<long long> getInvalidIDs(const std::vector<std::vector<std::string>> &ranges, bool phase1)
 {
     std::vector<long long> invalidIDs;
-    for (std::vector<std::string> &range : expandedRanges)
+    for (const std::vector<std::string> &range : ranges)
     {
-        for (long long n = std::stoll(range[0]); n <= std::stoll(range[1]); n++)
+        long long lower = std::stoll(range[0]);
+        long long upper = std::stoll(range[1]);
+        for (long long n = lower; n <= upper; n++)
         {
             std::string id = std::to_string(n);
-            // even length AND made up of repeating patterns
             if (isRepeated(id, phase1))
-                invalidIDs.push_back(std::stoll(id));
+                invalidIDs.push_back(n);
         }
     }
 
