@@ -13,7 +13,6 @@ int main()
     }
 
     std::vector<std::vector<std::string>> ranges = parseRanges(file);
-    expandRanges(ranges);
 
     std::vector<long long> invalidIDs = getInvalidIDs(ranges);
     long long sum = std::accumulate(invalidIDs.begin(), invalidIDs.end(), 0LL);
