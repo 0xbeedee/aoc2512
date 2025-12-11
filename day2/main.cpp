@@ -14,10 +14,11 @@ int main()
 
     std::vector<std::vector<std::string>> ranges = parseRanges(file);
 
-    std::vector<long long> invalidIDs = getInvalidIDs(ranges);
+    std::vector<long long> invalidIDs = getInvalidIDs(ranges, true);
     long long sum = std::accumulate(invalidIDs.begin(), invalidIDs.end(), 0LL);
-    // for (size_t i = 0; i < invalidIDs.size(); i++)
-    //     std::cout << invalidIDs[i] << ", ";
-    // std::cout << "\n";
     std::cout << "[PHASE 1] The sum of the invalid IDs is: " << sum << "\n";
+
+    invalidIDs = getInvalidIDs(ranges, false);
+    sum = std::accumulate(invalidIDs.begin(), invalidIDs.end(), 0LL);
+    std::cout << "[PHASE 2] The sum of the invalid IDs is: " << sum << "\n";
 }
