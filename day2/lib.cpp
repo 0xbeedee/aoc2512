@@ -6,9 +6,9 @@
 
 /****************************** PRIVATE HELPERS ************************************/
 
-// Checks if a string is symmetric.
+// Checks if a string is made up of any subtring repeated twice.
 // Assumes that the string has even length.
-bool isSymmetric(std::string s)
+bool isRepeated(std::string s)
 {
     size_t midpoint = s.size() / 2;
     std::string leftSlice(s.begin(), s.begin() + midpoint);
@@ -48,7 +48,7 @@ std::vector<long long> getInvalidIDs(std::vector<std::vector<std::string>> &expa
         {
             std::string id = std::to_string(n);
             // even length AND symmetric
-            if (id.size() % 2 == 0 && isSymmetric(id))
+            if (id.size() % 2 == 0 && isRepeated(id))
                 invalidIDs.push_back(std::stoll(id));
         }
     }
