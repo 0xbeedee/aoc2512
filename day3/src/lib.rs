@@ -17,7 +17,6 @@ pub fn gen_max_right(bank: &[char]) -> Vec<char> {
 
 // Finds (and returns) the maximum possible joltage in a single bank, for part 1.
 pub fn max_joltage_in_bank_part1(bank: &[char], max_right: &[char]) -> u64 {
-    let mut s = String::new();
     let mut max_joltage: u64 = 0;
 
     for i in 0..(bank.len() - 1) {
@@ -27,7 +26,6 @@ pub fn max_joltage_in_bank_part1(bank: &[char], max_right: &[char]) -> u64 {
         if number > max_joltage {
             max_joltage = number;
         }
-        s.clear();
     }
 
     max_joltage
