@@ -65,7 +65,8 @@ func CountRemovableRolls(grid [][]rune) int {
 
 func removeAllAccessible(grid [][]rune, toRemove [][]int) {
 	for _, pos := range toRemove {
-		grid[pos[0]][pos[1]] = '.'
+		row, col := pos[0], pos[1]
+		grid[row][col] = '.'
 	}
 }
 
@@ -83,7 +84,7 @@ func countNeighbours(grid [][]rune, row, col int) int {
 		newRow := row + direction[0]
 		newCol := col + direction[1]
 
-		if (newRow < len(grid) && newRow >= 0) && (newCol < len(grid[0]) && newCol >= 0) {
+		if newRow >= 0 && newRow < len(grid) && newCol >= 0 && newCol < len(grid[0]) {
 			if grid[newRow][newCol] == '@' {
 				count++
 			}
