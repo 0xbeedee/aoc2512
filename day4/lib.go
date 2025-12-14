@@ -30,20 +30,43 @@ func ReadGrid(filename string) ([][]rune, error) {
 }
 
 // Counts the number of accessible rolls.
-func CountAccessibleRolls(grid [][]rune) int {
+func CountAccessibleRolls(grid [][]rune) (int, [][]int) {
 	accessibleRolls := 0
+	var toRemove [][]int
 	for i, row := range grid {
 		for j, char := range row {
 			if char == '@' {
 				count := countNeighbours(grid, i, j)
 				if count < 4 {
 					accessibleRolls++
+					toRemove = append(toRemove, []int{i, j})
 				}
 			}
 		}
 	}
 
-	return accessibleRolls
+	return accessibleRolls, toRemove
+}
+
+// Counts the amount of rolls which can be removed.
+func CountRemovableRolls(grid [][]rune) int {
+	removableRolls := 0
+	for {
+		numAccesible, toRemove := CountAccessibleRolls(grid)
+		if numAccesible == 0 {
+			break
+		}
+		// remove all the accessible rolls in one sweep!
+		removeAllAccessible(grid, toRemove)
+		removableRolls += numAccesible
+	}
+	return removableRolls
+}
+
+func removeAllAccessible(grid [][]rune, toRemove [][]int) {
+	for _, pos := range toRemove {
+		grid[pos[0]][pos[1]] = '.'
+	}
 }
 
 // decleare at package-level to avoid instantiating it each time we call the function
