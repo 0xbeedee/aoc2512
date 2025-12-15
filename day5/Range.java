@@ -1,5 +1,5 @@
 
-class Range implements Comparable<Range> {
+public class Range implements Comparable<Range> {
 
     private long start;
     private long end;
