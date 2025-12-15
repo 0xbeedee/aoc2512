@@ -23,8 +23,9 @@ class Main {
                     numFreshIngredients++;
                 }
             }
-
             System.out.printf("[PHASE 1] The number of fresh ingredients is: %d\n", numFreshIngredients);
+
+            System.out.printf("[PHASE 2] The number of fresh IDs in the database is: %d\n", Lib.countFreshIDs(parsedRanges));
         } catch (IOException e) {
             System.out.printf("Error reading file: %s\n", e.getMessage());
         }

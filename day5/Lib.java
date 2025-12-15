@@ -44,4 +44,13 @@ public class Lib {
         }
         return false;
     }
+
+    // Counts the number of fresh IDs contained within the database.
+    public static long countFreshIDs(List<Range> ranges) {
+        long numFreshIDs = 0;
+        for (Range range : ranges) {
+            numFreshIDs += range.size();
+        }
+        return numFreshIDs;
+    }
 }

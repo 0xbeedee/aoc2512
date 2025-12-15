@@ -25,6 +25,11 @@ class Range implements Comparable<Range> {
         this.end = end;
     }
 
+    // Gets the size of the range (i.e., how many integer IDs can fit within it).
+    public long size() {
+        return end - start + 1;
+    }
+
     @Override
     public int compareTo(Range other) {
         // override to enable clean sorting
