@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Lib {
 
+    // Parses the ID ranges in the database and merges the mergeable ones into bigger ranges.
     public static List<Range> parseAndMergeRanges(List<String> rangeLines) {
         List<Range> rangeList = new ArrayList<>();
 
@@ -34,7 +35,8 @@ public class Lib {
         return mergedList;
     }
 
-    public static boolean isInRange(List<Range> ranges, long value) {
+    // Checks wether a value is withing any of the ranges out our disposal.
+    public static boolean isFresh(List<Range> ranges, long value) {
         for (Range range : ranges) {
             if (value >= range.getStart() && value <= range.getEnd()) {
                 return true;
@@ -42,5 +44,4 @@ public class Lib {
         }
         return false;
     }
-
 }

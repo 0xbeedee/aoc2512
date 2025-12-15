@@ -19,7 +19,7 @@ class Main {
             int numFreshIngredients = 0;
             for (String id : ids) {
                 long numericID = Long.parseLong(id);
-                if (Lib.isInRange(parsedRanges, numericID)) {
+                if (Lib.isFresh(parsedRanges, numericID)) {
                     numFreshIngredients++;
                 }
             }
