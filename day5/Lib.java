@@ -35,7 +35,7 @@ public class Lib {
         return mergedList;
     }
 
-    // Checks wether a value is withing any of the ranges out our disposal.
+    // Checks whether a value is within any of the ranges at our disposal.
     public static boolean isFresh(List<Range> ranges, long value) {
         for (Range range : ranges) {
             if (value >= range.getStart() && value <= range.getEnd()) {
