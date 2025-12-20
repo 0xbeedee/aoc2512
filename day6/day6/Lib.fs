@@ -7,7 +7,7 @@ let computeOp (column: int64[]) (op: string) =
     | _ -> failwith $"Unknown operation: {op}"
 
 
-let computeResults (numRows: int64[][]) (operations: string[]) =
+let computeResultsPhase1 (numRows: int64[][]) (operations: string[]) =
     operations |> Array.mapi (fun i op -> 
     let column = numRows |> Array.map (fun row -> row.[i])
     computeOp column op)
