@@ -3,8 +3,8 @@ module Lib
 // Computes an operation on an array of values
 let computeOp (column: int64[]) (op: string) =
     match op with
-    | '*' -> column |> Array.reduce (*)
-    | '+' -> column |> Array.reduce (+)
+    | "*" -> column |> Array.reduce (*)
+    | "+" -> column |> Array.reduce (+)
     | _ -> failwith $"Unknown operation: {op}"
 
 
