@@ -12,10 +12,10 @@ let numRowsPhase1 =
     numRows 
     |> Array.map (fun line -> line.Split([|' '|], System.StringSplitOptions.RemoveEmptyEntries))
     |> Array.map (Array.map int64)
-let mutable results = computeResultsPhase1 numRowsPhase1 operations
-let mutable grandTotal = results |> Array.sum
-printfn "[PHASE 1] The grand total is: %d" grandTotal
+let resultsPhase1 = computeResultsPhase1 numRowsPhase1 operations
+let grandTotalPhase1 = resultsPhase1 |> Array.sum
+printfn "[PHASE 1] The grand total is: %d" grandTotalPhase1
 
-results <- computeResultsPhase2 numRows operations
-grandTotal <- results |> Array.sum
-printfn "[PHASE 2] The grand total is: %d" grandTotal
+let resultsPhase2 = computeResultsPhase2 numRows operations
+let grandTotalPhase2 = resultsPhase2 |> Array.sum
+printfn "[PHASE 2] The grand total is: %d" grandTotalPhase2
