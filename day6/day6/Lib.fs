@@ -3,8 +3,8 @@ module Lib
 // Computes an operation on an array of values
 let computeOp (column: int64[]) (op: string) =
     match op with
-    | "*" -> column |> Array.reduce (*)
-    | "+" -> column |> Array.reduce (+)
+    | '*' -> column |> Array.reduce (*)
+    | '+' -> column |> Array.reduce (+)
     | _ -> failwith $"Unknown operation: {op}"
 
 
@@ -26,10 +26,7 @@ let computeResultsPhase2 (numRows: string[]) (operations: string[]) =
             col >= row.Length || row.[col] = ' ')
 
     // find all separator column positions...
-    let separators =
-        [| for col in 0 .. width - 1 do
-            if isSeparator col then yield col
-        |]
+    let separators = [| 0 .. width - 1 |] |> Array.filter isSeparator
     // ...and split the columns accordingly
     let bounds = Array.concat [[|-1|]; separators; [|width|]]
     let problemRanges =
