@@ -13,8 +13,8 @@ The idea is to move from low-level to high-level, while keeping a bias towards f
 5. Java
 6. F#
 7. Haskell
-8. Scala
-9. Elixir
+8. Elixir
+9. Scala
 10. TypeScript
 11. Ruby
 12. Python
