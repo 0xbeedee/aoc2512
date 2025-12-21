@@ -17,7 +17,11 @@ processRow (beams, splits) row =
         rowLen = length row
         processBeam (newBeams, splitCount) col 
             | col >= 0 && col < rowLen && isSplitter (row !! col) = 
-                (Set.insert (col + 1) (Set.insert (col - 1) newBeams), splitCount + 1)
+                let leftCol = col - 1
+                    rightCol = col + 1
+                    validCols = filter (\c -> c >= 0 && c < rowLen) [leftCol, rightCol] -- ensure we only use valid columns
+                    updatedBeams = foldl' (flip Set.insert) newBeams validCols
+                in (updatedBeams, splitCount + 1)
             | otherwise =
                 (Set.insert col newBeams, splitCount)
 
