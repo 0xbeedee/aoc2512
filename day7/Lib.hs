@@ -2,16 +2,27 @@ module Lib where
 
 import qualified Data.Set as Set
 import Data.Set (Set)
+
+import qualified Data.Map.Strict as Map
+import Data.Map.Strict (Map)
+
 import Data.List (elemIndex)
 import Data.Maybe (fromJust)
+
+-- Find the starting column index for the beam (i.e., the index of the 'S' in the first column)
+findStartColumn :: String -> Int
+findStartColumn input =
+    case lines input of
+        (firstRow:_) -> fromJust $ elemIndex 'S' firstRow -- 'S' is in the first row by construction
+        [] -> 0
 
 -- Checks whether a character is a splitter
 isSplitter :: Char -> Bool
 isSplitter = (== '^')
 
--- Processes each row, updating the number of beams if they hit the splitters
-processRow :: (Set Int, Int) -> String -> (Set Int, Int)
-processRow (beams, splits) row =
+-- Processes each row classically, updating the number of beams if they hit the splitters
+processRowClassical :: (Set Int, Int) -> String -> (Set Int, Int)
+processRowClassical (beams, splits) row =
     Set.foldl' processBeam (Set.empty, splits) beams
     where
         rowLen = length row
@@ -25,14 +36,33 @@ processRow (beams, splits) row =
             | otherwise =
                 (Set.insert col newBeams, splitCount)
 
+-- Extract split count from classical simulation result
+extractSplitCount :: (Set Int, Int) -> Int
+extractSplitCount (_, splitCount) = splitCount
+
+-- Processes each row "quantumly", tracking timeline counts per column
+processRowQuantum :: Map Int Int -> String -> Map Int Int
+processRowQuantum timelineCounts row =
+    Map.foldlWithKey' processTimeline Map.empty timelineCounts
+    where
+        rowLen = length row
+        processTimeline newCounts col count
+            | col >= 0 && col < rowLen && isSplitter (row !! col) =
+                let leftCol = col - 1
+                    rightCol = col + 1
+                    validCols = filter (\c -> c >= 0 && c < rowLen) [leftCol, rightCol]
+                    addTimelines acc c = Map.insertWith (+) c count acc
+                in foldl' addTimelines newCounts validCols
+            | otherwise =
+                Map.insertWith (+) col count newCounts
+
+-- Sum all timeline counts from quantum simulation result
+sumTimelines :: Map Int Int -> Int
+sumTimelines = Map.foldl' (+) 0
+
 -- Simulates the progression of the beam through the manifold
-simulate :: String -> Int
-simulate inputDiagram =
+simulate :: (state -> String -> state) -> (state -> result) -> state -> String -> result
+simulate processRowFn extractResultFn initialState inputDiagram =
     let rows = lines inputDiagram
-        initialBeams = case rows of 
-            (firstRow:_) -> Set.singleton (fromJust $ elemIndex 'S' firstRow) -- 'S' is in the first row, by construction
-            [] -> Set.empty
-        (_, totalSplits) = foldl' processRow (initialBeams, 0) rows
-    in totalSplits
-
-
+        finalState = foldl' processRowFn initialState rows
+    in extractResultFn finalState
