@@ -563,3 +563,11 @@ Temporary Items
 *.swp
 *.swo
 *~
+
+###################
+# Exceptions
+###################
+
+# Include Elixir source code in lib/
+!day8/lib/
+!day8/lib/**
