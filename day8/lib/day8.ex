@@ -27,21 +27,62 @@ defmodule Day8 do
   Constructs the connected components, given the 1000 pairs of jboxes which are closest together.
   """
   def build_components(edges, num_nodes) do
-    # init each node to its own connected component
-    init = for i <- 0..(num_nodes - 1), do: MapSet.new([i])
+    # {parent: node} map for union-find
+    init_parent = Map.new(for i <- 0..(num_nodes - 1), do: {i, i})
+    # {parent: rank} map for union-by-rank
+    init_rank = Map.new(for i <- 0..(num_nodes - 1), do: {i, 0})
 
-    Enum.reduce(edges, init, fn {_dist, i, j}, components ->
-      set_with_i = Enum.find(components, fn set -> MapSet.member?(set, i) end)
-      set_with_j = Enum.find(components, fn set -> MapSet.member?(set, j) end)
+    {parent, _rank} =
+      Enum.reduce(edges, {init_parent, init_rank}, fn {_dist, i, j}, {parent, rank} ->
+        union(parent, rank, i, j)
+      end)
 
-      # different components => merge
-      if(set_with_i != set_with_j) do
-        merged = MapSet.union(set_with_i, set_with_j)
-        remaining = Enum.filter(components, fn set -> set != set_with_i and set != set_with_j end)
-        [merged | remaining]
-      else
-        components
-      end
-    end)
+    parent
+  end
+
+  @doc """
+  Computes the sizes of the connected components.
+  """
+  def component_sizes(parent) do
+    parent
+    |> Enum.map(fn {node, _} -> find(parent, node) end)
+    |> Enum.frequencies()
+    |> Map.values()
+  end
+
+  # Implements the find() part for a union-find forest.
+  defp find(parent, node) do
+    if parent[node] == node do
+      # found the root
+      node
+    else
+      find(parent, parent[node])
+    end
+  end
+
+  # Implements the union() part for a union-find forest.
+  defp union(parent, rank, i, j) do
+    root_i = find(parent, i)
+    root_j = find(parent, j)
+
+    cond do
+      root_i == root_j ->
+        # already connected
+        {parent, rank}
+
+      rank[root_i] < rank[root_j] ->
+        # attach i under j
+        {Map.put(parent, root_i, root_j), rank}
+
+      rank[root_i] > rank[root_j] ->
+        # attach j under i
+        {Map.put(parent, root_j, root_i), rank}
+
+      true ->
+        # equal ranks, attach ad lib.
+        new_parent = Map.put(parent, root_i, root_j)
+        new_rank = Map.put(rank, root_j, rank[root_j] + 1)
+        {new_parent, new_rank}
+    end
   end
 end

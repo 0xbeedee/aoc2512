@@ -26,8 +26,8 @@ defmodule Day8.Main do
 
     result_phase1 =
       build_components(edges, num_nodes)
-      # take the three biggest connected components
-      |> Enum.map(&MapSet.size/1)
+      |> component_sizes()
+      # take the three largest
       |> Enum.sort(:desc)
       |> Enum.take(3)
       # multiply their sizes
