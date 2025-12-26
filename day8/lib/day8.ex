@@ -60,6 +60,36 @@ defmodule Day8 do
     end
   end
 
+  @doc """
+  Returns the final edges to connect in order to obtain a single connected component.
+  """
+  def get_final_edge(edges, num_nodes) do
+    init_parent = Map.new(for i <- 0..(num_nodes - 1), do: {i, i})
+    init_rank = Map.new(for i <- 0..(num_nodes - 1), do: {i, 0})
+
+    Enum.reduce_while(edges, {init_parent, init_rank, num_nodes}, fn {_dist, i, j},
+                                                                     {parent, rank, count} ->
+      root_i = find(parent, i)
+      root_j = find(parent, j)
+
+      if root_i == root_j do
+        # no merge
+        {:cont, {parent, rank, count}}
+      else
+        # merge
+        {new_parent, new_rank} = union(parent, rank, i, j)
+        new_count = count - 1
+
+        if new_count == 1 do
+          # last edge
+          {:halt, {i, j}}
+        else
+          {:cont, {new_parent, new_rank, new_count}}
+        end
+      end
+    end)
+  end
+
   # Implements the union() part for a union-find forest.
   defp union(parent, rank, i, j) do
     root_i = find(parent, i)

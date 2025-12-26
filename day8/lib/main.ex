@@ -19,13 +19,16 @@ defmodule Day8.Main do
       coords
       |> all_distances()
       |> Enum.sort()
-      # take the 1000 edges with the shortest distances
-      |> Enum.take(1000)
 
     num_nodes = length(coords)
 
+    ###################### PHASE 1 ###########################
+
+    # take the 1000 edges with the shortest distances, for phase 1
+    first_1000 = edges |> Enum.take(1000)
+
     result_phase1 =
-      build_components(edges, num_nodes)
+      build_components(first_1000, num_nodes)
       |> component_sizes()
       # take the three largest
       |> Enum.sort(:desc)
@@ -33,9 +36,17 @@ defmodule Day8.Main do
       # multiply their sizes
       |> Enum.product()
 
-    IO.puts("[PHASE 1] Result: #{result_phase1}")
+    IO.puts("[PHASE 1] Product of the sizes of the three largest components: #{result_phase1}")
 
-    result_phase2 = 0
-    IO.puts("[PHASE 2] Result: #{result_phase2}")
+    ###################### PHASE 2 ###########################
+
+    {i, j} = get_final_edge(edges, num_nodes)
+    {x1, _, _} = Enum.at(coords, i)
+    {x2, _, _} = Enum.at(coords, j)
+    result_phase2 = x1 * x2
+
+    IO.puts(
+      "[PHASE 2] Product of the X coordinates of the last two junction boxes: #{result_phase2}"
+    )
   end
 end
