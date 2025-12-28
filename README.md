@@ -1,4 +1,4 @@
-# aoc25
+# aoc2512
 
 Twelve [AOC](https://adventofcode.com/2025) challenges in twelve different languages.
 
