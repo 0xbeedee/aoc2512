@@ -1,3 +1,4 @@
+import Lib.graham_scan
 @main def main(): Unit =
   val red_tiles = scala.io.Source
     .fromFile("red_tiles.txt")
@@ -9,5 +10,6 @@
     }
     .toList
 
-  val largestArea = Lib.largest_area(red_tiles)
+  val convex_hull = Lib.graham_scan(red_tiles)
+  val largestArea = Lib.largest_area(convex_hull)
   printf("[PHASE 1] Largest area: %d\n", largestArea)
