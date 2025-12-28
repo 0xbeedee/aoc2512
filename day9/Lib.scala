@@ -1,51 +1,59 @@
+type Point = (Long, Long)
+
 object Lib:
 
-  // Computes the largest area, given the 2D coordinates of the red tiles.
-  def largest_area(red_tiles: List[(Long, Long)]): Long =
-    red_tiles
+  /** Computes the largest possible area, given the 2D coordinates of the red
+    * tiles.
+    */
+  def largestArea(redTiles: List[Point]): Long =
+    redTiles
       .combinations(2)
       .map { tiles =>
-        compute_area(tiles(0), tiles(1))
+        computeArea(tiles(0), tiles(1))
       }
       .max
 
-  def graham_scan(red_tiles: List[(Long, Long)]): List[(Long, Long)] =
-    val anchor_point = red_tiles.minBy(p => (p._2, p._1))
-    val sorted_tiles = red_tiles
+  /** Performs a Graham scan for computing the complex hull of the red tiles. */
+  def grahamScan(redTiles: List[Point]): List[Point] =
+    val anchorPoint = redTiles.minBy(p => (p._2, p._1))
+    val sortedTiles = redTiles
       .sortBy { tile =>
-        val (ax, ay) = anchor_point
+        val (ax, ay) = anchorPoint
         val (tx, ty) = tile
         math.atan2(ty - ay, tx - ax)
       }
 
-    sorted_tiles.foldLeft(List.empty[(Long, Long)]) { (stack, point) =>
+    sortedTiles.foldLeft(List.empty[Point]) { (stack, point) =>
       processPoint(stack, point)
     }
 
+  /** Processes a single point (tile), adding it to the convex hull if
+    * necessary.
+    */
   def processPoint(
-      stack: List[(Long, Long)],
-      point: (Long, Long)
-  ): List[(Long, Long)] =
-    if (stack.length < 2) point :: stack
-    else if (cross_product(stack(1), stack(0), point) > 0)
-      // the three points make a left turn
-      point :: stack
-    else
-      // the three points make a right turn
-      processPoint(stack.tail, point)
+      stack: List[Point],
+      point: Point
+  ): List[Point] =
+    stack match
+      case a :: b :: tail if crossProduct(b, a, point) <= 0 =>
+        // stack has 2+ elements AND right turn => pop
+        processPoint(b :: tail, point)
+      case _ => point :: stack // < 2 elements OR left turn => push
 
-  // Computes the area between two tiles
-  def compute_area(tile1: (Long, Long), tile2: (Long, Long)): Long =
+  /** Computes the area between two 2D points (tiles), assuming the represent
+    * the opposite corners of a rectangle.
+    */
+  def computeArea(tile1: Point, tile2: Point): Long =
     val (x1, y1) = tile1
     val (x2, y2) = tile2
     // +1 to include the borders
     ((x1 - x2).abs + 1) * ((y1 - y2).abs + 1)
 
-  // Computes the 2D cross-product between three tiles.
-  def cross_product(
-      tile1: (Long, Long),
-      tile2: (Long, Long),
-      tile3: (Long, Long)
+  /** Computes the 2D cross-product between three points (tiles). */
+  def crossProduct(
+      tile1: Point,
+      tile2: Point,
+      tile3: Point
   ): Long =
     val (x1, y1) = tile1
     val (x2, y2) = tile2

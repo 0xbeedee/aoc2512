@@ -1,15 +1,15 @@
-import Lib.graham_scan
+import Lib.grahamScan
+import Lib.largestArea
+
 @main def main(): Unit =
-  val red_tiles = scala.io.Source
+  val redTiles = scala.io.Source
     .fromFile("red_tiles.txt")
     .getLines()
     .map { line =>
-      val parts = line.split(",").map(_.toLong)
-      val Array(x, y) = parts
-      (x, y)
+      line.split(",").map(_.toLong) match
+        case Array(x, y) => (x, y)
     }
     .toList
 
-  val convex_hull = Lib.graham_scan(red_tiles)
-  val largestArea = Lib.largest_area(convex_hull)
-  printf("[PHASE 1] Largest area: %d\n", largestArea)
+  val convexHull = grahamScan(redTiles)
+  printf("[PHASE 1] Largest area: %d\n", largestArea(convexHull))
