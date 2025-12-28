@@ -30,7 +30,7 @@ object Lib:
   /** Processes a single point (tile), adding it to the convex hull if
     * necessary.
     */
-  def processPoint(
+  private def processPoint(
       stack: List[Point],
       point: Point
   ): List[Point] =
@@ -43,14 +43,14 @@ object Lib:
   /** Computes the area between two 2D points (tiles), assuming the represent
     * the opposite corners of a rectangle.
     */
-  def computeArea(tile1: Point, tile2: Point): Long =
+  private def computeArea(tile1: Point, tile2: Point): Long =
     val (x1, y1) = tile1
     val (x2, y2) = tile2
     // +1 to include the borders
     ((x1 - x2).abs + 1) * ((y1 - y2).abs + 1)
 
   /** Computes the 2D cross-product between three points (tiles). */
-  def crossProduct(
+  private def crossProduct(
       tile1: Point,
       tile2: Point,
       tile3: Point
