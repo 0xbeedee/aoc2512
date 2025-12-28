@@ -145,6 +145,12 @@ go.work.sum
 hs_err_pid*
 replay_pid*
 
+# Scala
+.metals
+.bloop
+day9/project
+.scalafmt.*
+
 ###################
 # 6. F# / .NET
 ###################
