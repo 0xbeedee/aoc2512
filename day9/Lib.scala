@@ -1,7 +1,24 @@
+/** A 2D coordinate (x, y). */
 type Point = (Long, Long)
+
+/** A horizontal strip of the plane between two y-values (yLow, yHigh).
+  *
+  * Within a slab, the "inside" x-intervals of the rectilinear polygon are
+  * constant - they only change when crossing from one slab to another.
+  */
 type Slab = (Long, Long)
+
+/** An x-interval (xLo, xHi) representing a horizontal segment where points
+  * are inside the rectilinear polygon for a given slab.
+  */
 type Interval = (Long, Long)
 
+/** A vertical edge of the rectilinear polygon.
+  *
+  * Consecutive red tiles that share the same x-coordinate form a vertical
+  * edge. These edges determine entry/exit points when scanning horizontally
+  * across the polygon.
+  */
 case class VerticalEdge(x: Long, yMin: Long, yMax: Long)
 
 object Lib:
@@ -31,7 +48,16 @@ object Lib:
       processPoint(stack, point)
     }
 
-  /** Extracts vertical edges from the ordered list of red tiles. */
+  /** Extracts vertical edges from the ordered list of red tiles.
+    *
+    * The red tiles form a closed rectilinear polygon where consecutive tiles
+    * are connected by axis-aligned segments. This function identifies the
+    * vertical segments by finding consecutive tile pairs that share the same
+    * x-coordinate.
+    *
+    * The wrap-around (last tile to first tile) is included to close the
+    * polygon.
+    */
   def extractVerticalEdges(redTiles: List[Point]): List[VerticalEdge] =
     redTiles
       .zip(redTiles.tail :+ redTiles.head)
@@ -40,7 +66,20 @@ object Lib:
           VerticalEdge(x1, y1 min y2, y1 max y2)
       }
 
-  /** Computes the slab intervals for the rectilinear polygon. */
+  /** Computes the inside x-intervals for each horizontal slab of the polygon.
+    *
+    * This is a scanline decomposition: we divide the plane into horizontal
+    * slabs at each distinct y-coordinate of the red tiles. Within each slab,
+    * the polygon's interior has constant x-intervals.
+    *
+    * For each slab, we find which vertical edges span it (i.e., cross through
+    * that y-range). Sorting these edges by x-coordinate and pairing them up
+    * gives us the "inside" intervals: the first edge is an entry, the second
+    * is an exit, and so on.
+    *
+    * Example: if a slab has vertical edges at x = 2, 5, 8, 10, then the inside
+    * intervals are [(2, 5), (8, 10)].
+    */
   def computeSlabIntervals(redTiles: List[Point]): Map[Slab, List[Interval]] =
     val verticalEdges = extractVerticalEdges(redTiles)
     val criticalYs = redTiles.map(_._2).distinct.sorted
@@ -60,8 +99,19 @@ object Lib:
       (yLow, yHigh) -> intervals
     }.toMap
 
-  /** Computes the largest possible area, given the red-green constraints in
-    * part 2 of the problem.
+  /** Computes the largest rectangle area using only red and green tiles.
+    *
+    * A rectangle is valid if:
+    *   1. Two opposite corners are red tiles
+    *   2. The entire rectangle lies within the rectilinear polygon (red+green)
+    *
+    * To check containment, we verify that for every slab the rectangle spans,
+    * its x-range [xMin, xMax] is fully contained within one of that slab's
+    * inside intervals. If any slab fails this check, the rectangle extends
+    * outside the polygon.
+    *
+    * Complexity: O(n^2) where n is the number of red tiles, since we check all
+    * pairs and each containment check is O(slabs) = O(n).
     */
   def largestRedGreenArea(
       redTiles: List[Point],
