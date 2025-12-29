@@ -1,5 +1,6 @@
 import Lib.grahamScan
 import Lib.largestArea
+import Lib.computeSlabIntervals
 import Lib.largestRedGreenArea
 
 @main def main(): Unit =
@@ -15,30 +16,7 @@ import Lib.largestRedGreenArea
   val convexHull = grahamScan(redTiles)
   printf("[PHASE 1] Largest area: %d\n", largestArea(convexHull))
 
-  val verticalEdges = redTiles
-    .zip(redTiles.tail :+ redTiles.head)
-    .collect {
-      case ((x1, y1), (x2, y2)) if (x1 == x2) =>
-        (x1, Math.min(y1, y2), Math.max(y1, y2))
-    }
-
-  // vertices of the rectilinear polygon
-  val criticalYs = redTiles.map(_._2).distinct.sorted
-
-  val slabs = criticalYs.zip(criticalYs.tail)
-  val slabIntervals = slabs.map { case (yLow, yHigh) =>
-    val spanningXs = verticalEdges
-      .filter { case (x, yMin, yMax) =>
-        yMin < yHigh && yMax > yLow
-      }
-      .map(_._1)
-      .sorted
-
-    val intervals =
-      spanningXs.grouped(2).toList.map { case List(a, b) => (a, b) }
-    (yLow, yHigh) -> intervals
-  }.toMap
-
+  val slabIntervals = computeSlabIntervals(redTiles)
   printf(
     "[PHASE 2] Largest red-green area: %d\n",
     largestRedGreenArea(redTiles, slabIntervals)

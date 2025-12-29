@@ -1,4 +1,8 @@
 type Point = (Long, Long)
+type Slab = (Long, Long)
+type Interval = (Long, Long)
+
+case class VerticalEdge(x: Long, yMin: Long, yMax: Long)
 
 object Lib:
 
@@ -27,12 +31,41 @@ object Lib:
       processPoint(stack, point)
     }
 
+  /** Extracts vertical edges from the ordered list of red tiles. */
+  def extractVerticalEdges(redTiles: List[Point]): List[VerticalEdge] =
+    redTiles
+      .zip(redTiles.tail :+ redTiles.head)
+      .collect {
+        case ((x1, y1), (x2, y2)) if x1 == x2 =>
+          VerticalEdge(x1, y1 min y2, y1 max y2)
+      }
+
+  /** Computes the slab intervals for the rectilinear polygon. */
+  def computeSlabIntervals(redTiles: List[Point]): Map[Slab, List[Interval]] =
+    val verticalEdges = extractVerticalEdges(redTiles)
+    val criticalYs = redTiles.map(_._2).distinct.sorted
+    val slabs = criticalYs.zip(criticalYs.tail)
+
+    slabs.map { case (yLow, yHigh) =>
+      val spanningXs = verticalEdges
+        .filter { edge =>
+          edge.yMin < yHigh && edge.yMax > yLow
+        }
+        .map(_.x)
+        .sorted
+
+      val intervals =
+        spanningXs.grouped(2).toList.map { case List(a, b) => (a, b) }
+
+      (yLow, yHigh) -> intervals
+    }.toMap
+
   /** Computes the largest possible area, given the red-green constraints in
     * part 2 of the problem.
     */
   def largestRedGreenArea(
       redTiles: List[Point],
-      slabIntervals: Map[Point, List[Point]]
+      slabIntervals: Map[Slab, List[Interval]]
   ): Long =
     redTiles
       .combinations(2)
