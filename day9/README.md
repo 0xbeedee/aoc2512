@@ -21,7 +21,7 @@ sbt                        # Starts sbt shell
 sbt clean                  # Removes build artifacts
 ```
 
-The project uses Scala 3.3.1 with sbt.
+The project uses Scala 3.7.4 with sbt.
 
 **File structure:**
 - `Lib.scala` - Library functions
