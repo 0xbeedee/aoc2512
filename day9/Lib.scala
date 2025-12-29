@@ -27,6 +27,36 @@ object Lib:
       processPoint(stack, point)
     }
 
+  /** Computes the largest possible area, given the red-green constraints in
+    * part 2 of the problem.
+    */
+  def largestRedGreenArea(
+      redTiles: List[Point],
+      slabIntervals: Map[Point, List[Point]]
+  ): Long =
+    redTiles
+      .combinations(2)
+      .filter { case List(tile1, tile2) =>
+        val (x1, y1) = tile1
+        val (x2, y2) = tile2
+        val xMin = x1 min x2
+        val xMax = x1 max x2
+        val yMin = y1 min y2
+        val yMax = y1 max y2
+
+        val overlappingSlabs = slabIntervals.filter { case ((yLow, yHigh), _) =>
+          yMin < yHigh && yMax > yLow
+        }
+
+        overlappingSlabs.forall { case (_, intervals) =>
+          intervals.exists { case (xLo, xHi) =>
+            xLo <= xMin && xMax <= xHi
+          }
+        }
+      }
+      .map { case List(tile1, tile2) => computeArea(tile1, tile2) }
+      .max
+
   /** Processes a single point (tile), adding it to the convex hull if
     * necessary.
     */
