@@ -1,0 +1,13 @@
+{
+  "name": "day10",
+  "type": "module",
+  "scripts": {
+    "start": "node --experimental-strip-types main.ts",
+    "dev": "node --experimental-strip-types --watch main.ts",
+    "check": "tsc"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.3",
+    "typescript": "^5.7.2"
+  }
+}
