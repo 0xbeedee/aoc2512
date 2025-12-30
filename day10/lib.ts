@@ -7,13 +7,17 @@ export function parseInput(input: string): Machine[] {
 
   lines.forEach((line) => {
     // first part is for the indicator lights - [...]
-    let target_lights = line.slice(line.indexOf("[") + 1, line.indexOf("]"));
+    const target_lights = line.slice(line.indexOf("[") + 1, line.indexOf("]"));
+
     // second part is for the buttons - (...)
-    let button_groups = line.matchAll(/\(([^)]+)\)/g);
-    let buttons = [...button_groups].map((match) => match[1]).map((group) => group.split(",").map(Number));
+    const buttons = [...line.matchAll(/\(([^)]+)\)/g)].map((m) => m[1].split(",").map(Number));
+
     // third part is for the joltages - {...}
-    let joltage_string = line.slice(line.indexOf("{") + 1, line.indexOf("}"));
-    let joltages = joltage_string.split(",").map(Number);
+    const joltages = line
+      .slice(line.indexOf("{") + 1, line.indexOf("}"))
+      .split(",")
+      .map(Number);
+
     machines.push({ target_lights, buttons, joltages });
   });
 
@@ -22,7 +26,7 @@ export function parseInput(input: string): Machine[] {
 
 /** Performs BFS on the state search tree. It operates on a single Machine.
  *
- * Returns the fewest button presses necessary to get to the desired state.
+ * Returns the fewest button presses necessary to get to the target state.
  */
 export function BFS(machine: Machine): number {
   let init_lights = ".".repeat(machine.target_lights.length); // all lights off
@@ -33,28 +37,28 @@ export function BFS(machine: Machine): number {
   visited.add(init_lights);
 
   while (queue.length > 0) {
-    const state = queue.shift()!;
-    if (state[0] === machine.target_lights) {
-      return state[1];
+    const [curState, depth] = queue.shift()!;
+    if (curState === machine.target_lights) {
+      return depth;
     }
 
-    machine.buttons.forEach((buttons) => {
-      let new_state = toggle_lights(state[0], buttons);
-      if (!visited.has(new_state)) {
-        visited.add(new_state);
-        queue.push([new_state, state[1] + 1]);
+    for (const button of machine.buttons) {
+      const newState = toggleLights(curState, button);
+      if (!visited.has(newState)) {
+        visited.add(newState);
+        queue.push([newState, depth + 1]);
       }
-    });
+    }
   }
 
   // queue exhausted => target state not reachable
   return -1;
 }
 
-/** Toggles the lights on/off for a single state, and a single group of buttons. */
-function toggle_lights(state: string, buttons: number[]): string {
-  buttons.forEach((button) => {
-    state = state.slice(0, button) + (state[button] == "#" ? "." : "#") + state.slice(button + 1);
-  });
+/** Toggles the lights on/off for a single state and a single group of button presses. */
+function toggleLights(state: string, indices: number[]): string {
+  for (const idx of indices) {
+    state = state.slice(0, idx) + (state[idx] === "#" ? "." : "#") + state.slice(idx + 1);
+  }
   return state;
 }
