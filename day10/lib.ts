@@ -2,26 +2,21 @@ type Machine = { target_lights: string; buttons: number[][]; target_joltages: nu
 
 /** Parses the input file, building an array of Machine objects. */
 export function parseInput(input: string): Machine[] {
-  let machines: Machine[] = [];
-  let lines = input.trim().split("\n");
+  const lines = input.trim().split("\n");
 
-  lines.forEach((line) => {
-    // first part is for the indicator lights - [...]
+  return lines.map((line) => {
+    // first part, [...]
     const target_lights = line.slice(line.indexOf("[") + 1, line.indexOf("]"));
-
-    // second part is for the buttons - (...)
+    // second part, (...)
     const buttons = [...line.matchAll(/\(([^)]+)\)/g)].map((m) => m[1].split(",").map(Number));
-
-    // third part is for the joltages - {...}
+    // third part, {...}
     const target_joltages = line
       .slice(line.indexOf("{") + 1, line.indexOf("}"))
       .split(",")
       .map(Number);
 
-    machines.push({ target_lights, buttons, target_joltages });
+    return { target_lights, buttons, target_joltages };
   });
-
-  return machines;
 }
 
 /** Performs BFS on the state search tree made up of light indicators. It operates on a single Machine.
@@ -54,16 +49,18 @@ export function lightsBFS(machine: Machine): number {
   return -1;
 }
 
+type ILPModel = {
+  optimize: string;
+  opType: string;
+  constraints: Record<string, { equal: number }>;
+  variables: Record<string, Record<string, number>>;
+  ints: Record<string, number>;
+};
+
 /** Sets up the integer linear programming (ILP) problem for each machine. */
-export function buildILPModel(machine: Machine) {
+export function buildILPModel(machine: Machine): ILPModel {
   // see https://www.npmjs.com/package/javascript-lp-solver
-  const model: {
-    optimize: string;
-    opType: string;
-    constraints: Record<string, { equal: number }>;
-    variables: Record<string, Record<string, number>>;
-    ints: Record<string, number>;
-  } = {
+  const model: ILPModel = {
     optimize: "presses",
     opType: "min",
     constraints: {},
@@ -78,16 +75,14 @@ export function buildILPModel(machine: Machine) {
   machine.buttons.forEach((button, buttonIndex) => {
     const buttonName = `button${buttonIndex}`;
     model.variables[buttonName] = {
-      presses: 1, // Every button contributes 1 to the objective
+      presses: 1, // every button contributes 1 to the objective
     };
 
     button.forEach((counterIndex) => {
       model.variables[buttonName][`counter${counterIndex}`] = 1;
     });
-  });
 
-  // all buttons must have integer values
-  machine.buttons.forEach((button, buttonIndex) => {
+    // all buttons must have integer values
     model.ints[`button${buttonIndex}`] = 1;
   });
 
