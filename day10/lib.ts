@@ -54,6 +54,46 @@ export function lightsBFS(machine: Machine): number {
   return -1;
 }
 
+/** Sets up the integer linear programming (ILP) problem for each machine. */
+export function buildILPModel(machine: Machine) {
+  // see https://www.npmjs.com/package/javascript-lp-solver
+  const model: {
+    optimize: string;
+    opType: string;
+    constraints: Record<string, { equal: number }>;
+    variables: Record<string, Record<string, number>>;
+    ints: Record<string, number>;
+  } = {
+    optimize: "presses",
+    opType: "min",
+    constraints: {},
+    variables: {},
+    ints: {},
+  };
+
+  machine.target_joltages.forEach((targetValue, counterIndex) => {
+    model.constraints[`counter${counterIndex}`] = { equal: targetValue };
+  });
+
+  machine.buttons.forEach((button, buttonIndex) => {
+    const buttonName = `button${buttonIndex}`;
+    model.variables[buttonName] = {
+      presses: 1, // Every button contributes 1 to the objective
+    };
+
+    button.forEach((counterIndex) => {
+      model.variables[buttonName][`counter${counterIndex}`] = 1;
+    });
+  });
+
+  // all buttons must have integer values
+  machine.buttons.forEach((button, buttonIndex) => {
+    model.ints[`button${buttonIndex}`] = 1;
+  });
+
+  return model;
+}
+
 /** Toggles the lights on/off for a single state and a single group of button presses. */
 function toggleLights(state: string, indices: number[]): string {
   for (const idx of indices) {

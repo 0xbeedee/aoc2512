@@ -9,5 +9,8 @@
   "devDependencies": {
     "@types/node": "^25.0.3",
     "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "javascript-lp-solver": "^0.4.24"
   }
 }
