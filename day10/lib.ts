@@ -1,4 +1,4 @@
-type Machine = { target_lights: string; buttons: number[][]; joltages: number[] };
+type Machine = { target_lights: string; buttons: number[][]; target_joltages: number[] };
 
 /** Parses the input file, building an array of Machine objects. */
 export function parseInput(input: string): Machine[] {
@@ -13,22 +13,22 @@ export function parseInput(input: string): Machine[] {
     const buttons = [...line.matchAll(/\(([^)]+)\)/g)].map((m) => m[1].split(",").map(Number));
 
     // third part is for the joltages - {...}
-    const joltages = line
+    const target_joltages = line
       .slice(line.indexOf("{") + 1, line.indexOf("}"))
       .split(",")
       .map(Number);
 
-    machines.push({ target_lights, buttons, joltages });
+    machines.push({ target_lights, buttons, target_joltages });
   });
 
   return machines;
 }
 
-/** Performs BFS on the state search tree. It operates on a single Machine.
+/** Performs BFS on the state search tree made up of light indicators. It operates on a single Machine.
  *
- * Returns the fewest button presses necessary to get to the target state.
+ * Returns the fewest button presses necessary to get to the target light configuration.
  */
-export function BFS(machine: Machine): number {
+export function lightsBFS(machine: Machine): number {
   let init_lights = ".".repeat(machine.target_lights.length); // all lights off
 
   const queue: [string, number][] = [];
@@ -51,7 +51,6 @@ export function BFS(machine: Machine): number {
     }
   }
 
-  // queue exhausted => target state not reachable
   return -1;
 }
 
