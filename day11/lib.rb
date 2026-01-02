@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
 def dfs(cur_node, graph, visited)
-  if cur_node == "out"
-    # found a path
-    return 1
-  end
+  # found a path to out
+  return 1 if cur_node == 'out'
 
   visited.add(cur_node)
 
@@ -18,5 +16,6 @@ def dfs(cur_node, graph, visited)
 
   # unmark to not pollute other paths
   visited.delete(cur_node)
-  return path_count
+
+  path_count
 end

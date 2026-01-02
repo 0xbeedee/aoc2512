@@ -3,14 +3,10 @@
 
 require_relative 'lib'
 
-devices = File.read('devices.txt').lines
-
 # construct adjacency list
-devices_graph = {}
-devices.each do |device|
-  node, neighbours = device.split(':')
-  neighbours = neighbours.split(' ')
-  devices_graph[node] = neighbours
+devices_graph = File.readlines('devices.txt', chomp: true).each_with_object({}) do |line, graph|
+  node, neighbours = line.split(":", 2)
+  graph[node] = neighbours.split
 end
 
 path_count = dfs("you", devices_graph, Set.new)
