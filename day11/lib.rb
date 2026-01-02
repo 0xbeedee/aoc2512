@@ -1,3 +1,22 @@
 # frozen_string_literal: true
 
-# TODO: Implement path finding logic
+def dfs(cur_node, graph, visited)
+  if cur_node == "out"
+    # found a path
+    return 1
+  end
+
+  visited.add(cur_node)
+
+  path_count = 0
+  neighbours = graph[cur_node] || []
+  neighbours.each do |neighbour|
+    next if visited.include?(neighbour) # skip visited nodes
+
+    path_count += dfs(neighbour, graph, visited)
+  end
+
+  # unmark to not pollute other paths
+  visited.delete(cur_node)
+  return path_count
+end

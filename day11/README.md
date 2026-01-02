@@ -1,6 +1,6 @@
 ## Running the code
 
-**Prerequisites:** Ruby 3.0+ installed.
+**Prerequisites:** Ruby 3.3+ installed.
 
 **Run:**
 ```bash

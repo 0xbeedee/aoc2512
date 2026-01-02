@@ -3,7 +3,15 @@
 
 require_relative 'lib'
 
-# Read input file
-input = File.read('devices.txt')
+devices = File.read('devices.txt').lines
 
-# TODO: Parse input and find all paths
+# construct adjacency list
+devices_graph = {}
+devices.each do |device|
+  node, neighbours = device.split(':')
+  neighbours = neighbours.split(' ')
+  devices_graph[node] = neighbours
+end
+
+path_count = dfs("you", devices_graph, Set.new)
+printf("[PHASE 1] Total possible paths: %d\n", path_count)
