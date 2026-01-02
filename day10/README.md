@@ -20,4 +20,3 @@ npm run check              # Runs tsc for type checking
 **File structure:**
 - `lib.ts` - Library functions
 - `main.ts` - Main entry point
-- `input.txt` - Puzzle input data

@@ -23,5 +23,4 @@ The project uses Elixir with Mix build tool.
 **File structure:**
 - `lib/day8.ex` - Core module with library functions
 - `lib/main.ex` - Main entry point
-- `input.txt` - Puzzle input data
 

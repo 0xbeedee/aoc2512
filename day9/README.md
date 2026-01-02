@@ -26,4 +26,3 @@ The project uses Scala 3.7.4 with sbt.
 **File structure:**
 - `Lib.scala` - Library functions
 - `Main.scala` - Main entry point
-- `input.txt` - Puzzle input data
