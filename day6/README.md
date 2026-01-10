@@ -13,7 +13,7 @@ dotnet build                # Just compiles the project
 dotnet clean                # Removes build artifacts
 ```
 
-The project uses .NET 9.0 with F#.
+The project uses .NET 10.0 with F#.
 
 **File compilation order:**
 - `Lib.fs` - Library functions (compiles first)

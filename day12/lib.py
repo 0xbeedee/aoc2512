@@ -11,7 +11,7 @@ def shapes_fit(
     shape_counts: list[int],
 ) -> bool:
     """Checks if a number of shapes can fit within the specified grid."""
-    # checking the are is apparently enough for the real input...
+    # checking the area is apparently enough for the real input...
     cells_needed = sum(
         len(shape_transforms[i][0]) * count for i, count in enumerate(shape_counts)
     )
@@ -108,7 +108,7 @@ def _rotate(shape: set[tuple[int, int]], amount: int) -> set[tuple[int, int]]:
 
 
 def _flip_vertical(shape: set[tuple[int, int]]) -> set[tuple[int, int]]:
-    """Flips a shape horizontally."""
+    """Flips a shape vertically."""
     return {(-x, y) for x, y in shape}
 
 

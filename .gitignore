@@ -222,7 +222,7 @@ cabal.project.local~
 *.dyn_hi
 
 ###################
-# 9. Elixir
+# 8. Elixir
 ###################
 
 # Elixir build artifacts

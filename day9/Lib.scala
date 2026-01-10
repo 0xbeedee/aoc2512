@@ -34,7 +34,7 @@ object Lib:
       }
       .max
 
-  /** Performs a Graham scan for computing the complex hull of the red tiles. */
+  /** Performs a Graham scan for computing the convex hull of the red tiles. */
   def grahamScan(redTiles: List[Point]): List[Point] =
     val anchorPoint = redTiles.minBy(p => (p._2, p._1))
     val sortedTiles = redTiles

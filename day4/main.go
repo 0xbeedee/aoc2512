@@ -13,7 +13,7 @@ func main() {
 	fmt.Println("[PHASE 1] Number of accessible rolls:", rollCount)
 
 	removableCount := CountRemovableRolls(grid)
-	fmt.Println("[PHASE 1] Number of removable rolls:", removableCount)
+	fmt.Println("[PHASE 2] Number of removable rolls:", removableCount)
 }
 
 // Prints the grid as a 2D matrix.

@@ -70,7 +70,7 @@ func removeAllAccessible(grid [][]rune, toRemove [][]int) {
 	}
 }
 
-// decleare at package-level to avoid instantiating it each time we call the function
+// declare at package-level to avoid instantiating it each time we call the function
 var directions = [8][2]int{
 	{-1, -1}, {-1, 0}, {-1, 1},
 	{0, -1}, {0, 1},
