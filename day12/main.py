@@ -16,18 +16,19 @@ def parse_input(
         if not region:
             continue
         spec, shapes_list = region.split(":", maxsplit=1)
-        spec = spec.split("x")
-        spec_tuple = (int(spec[0]), int(spec[1]))
-        regions.append((spec_tuple, [int(n) for n in shapes_list.lstrip().split(" ")]))
+        width, height = map(int, spec.split("x"))
+        regions.append(
+            ((width, height), [int(n) for n in shapes_list.lstrip().split(" ")])
+        )
 
     return shape_transforms, regions
 
 
 if __name__ == "__main__":
     with open("presents.txt", "r") as pf:
-        input = pf.read().split("\n\n")  # split on empty lines
+        presents = pf.read().split("\n\n")  # split on empty lines
 
-    shape_transforms, regions = parse_input(input)
+    shape_transforms, regions = parse_input(presents)
 
     num_fitting_regions = 0
     for (width, height), required_shapes in regions:

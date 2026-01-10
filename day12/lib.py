@@ -11,7 +11,7 @@ def shapes_fit(
     shape_counts: list[int],
 ) -> bool:
     """Checks if a number of shapes can fit within the specified grid."""
-    # checking the are is apparently enough for the real input (part 1)
+    # checking the are is apparently enough for the real input...
     cells_needed = sum(
         len(shape_transforms[i][0]) * count for i, count in enumerate(shape_counts)
     )
@@ -19,40 +19,47 @@ def shapes_fit(
         return True
     return False
 
-    # useless backtracking...
-    #
-    # all_placed = all([count == 0 for count in shape_counts])
-    # if all_placed:
-    #     # all shapes have been placed, according to their counts
-    #     return True
 
-    # position = grid.find_first_empty_cell()
-    # print(f"Trying position {position}, counts={shape_counts}")  # debug
-    # if position is None:
-    #     # grid is filled, and all the shapes have been placed
-    #     return all_placed
+def shapes_fit_backtracking(
+    grid: Grid,
+    shape_transforms: list[list[set[tuple[int, int]]]],
+    shape_counts: list[int],
+) -> bool:
+    """Checks if a number of shapes can fit within the specified grid, using backtracking.
 
-    # for shape_type in range(len(shape_counts)):
-    #     if shape_counts[shape_type] == 0:
-    #         # all shapes already placed, skip iteration
-    #         continue
+    Note that this is overkill for the problem, and it is kept here for reference only.
+    """
+    all_placed = all(count == 0 for count in shape_counts)
+    if all_placed:
+        # all shapes have been placed, according to their counts
+        return True
 
-    #     for transformation in shape_transforms[shape_type]:
-    #         if grid.can_place(transformation, position):
-    #             # place
-    #             shape_counts[shape_type] -= 1
-    #             grid.place(transformation, position)
-    #             # recurse
-    #             if shapes_fit(grid, shape_transforms, shape_counts):
-    #                 return True
-    #             # undo placement, if no recursion
-    #             grid.unplace(transformation, position)
-    #             shape_counts[shape_type] += 1  # undo decrement
+    position = grid.find_first_empty_cell()
+    if position is None:
+        # grid is filled, and all the shapes have been placed
+        return all_placed
 
-    # grid.occupied.add(position)  # try another empty cell at the next iteration
-    # result = shapes_fit(grid, shape_transforms, shape_counts)
-    # grid.occupied.remove(position)  # restore the grid
-    # return result
+    for shape_type in range(len(shape_counts)):
+        if shape_counts[shape_type] == 0:
+            # all shapes already placed, skip iteration
+            continue
+
+        for transformation in shape_transforms[shape_type]:
+            if grid.can_place(transformation, position):
+                # place
+                shape_counts[shape_type] -= 1
+                grid.place(transformation, position)
+                # recurse
+                if shapes_fit(grid, shape_transforms, shape_counts):
+                    return True
+                # undo placement, if no recursion
+                grid.unplace(transformation, position)
+                shape_counts[shape_type] += 1  # undo decrement
+
+    grid.occupied.add(position)  # try another empty cell at the next iteration
+    result = shapes_fit(grid, shape_transforms, shape_counts)
+    grid.occupied.remove(position)  # restore the grid
+    return result
 
 
 def generate_transformations(shape_str: str) -> list[set[tuple[int, int]]]:
@@ -63,7 +70,7 @@ def generate_transformations(shape_str: str) -> list[set[tuple[int, int]]]:
     transformations = [init_coords]
 
     # we can generate all the flips by flipping the original, then rotating it!
-    og_flipped = _normalise(_flip_horizontal(transformations[0]))
+    og_flipped = _normalise(_flip_vertical(transformations[0]))
     if og_flipped not in transformations:
         transformations.append(og_flipped)
 
@@ -100,7 +107,7 @@ def _rotate(shape: set[tuple[int, int]], amount: int) -> set[tuple[int, int]]:
     return {(x * cosine + y * sine, -x * sine + y * cosine) for x, y in shape}
 
 
-def _flip_horizontal(shape: set[tuple[int, int]]) -> set[tuple[int, int]]:
+def _flip_vertical(shape: set[tuple[int, int]]) -> set[tuple[int, int]]:
     """Flips a shape horizontally."""
     return {(-x, y) for x, y in shape}
 
